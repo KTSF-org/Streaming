@@ -1,5 +1,7 @@
 package outils;
 
+import exceptions.StreamingException;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +57,25 @@ public final class Ffmpeg {
         commande.add(titreFenetre);
         commande.add(fichier.getAbsolutePath());
 
-        //System.out.println(commande);
+        ProcessBuilder pb = new ProcessBuilder(commande);
+
+        pb.redirectOutput(ProcessBuilder.Redirect.DISCARD);
+        pb.redirectError(ProcessBuilder.Redirect.DISCARD);
+        Process processus = pb.start();
+        return processus.waitFor();
+    }
+
+    public static int lire(String url, String titreFenetre) throws IOException, InterruptedException, StreamingException {
+        List<String> commande = new ArrayList<>();
+        commande.add("ffplay");
+        commande.add("-autoexit");
+        commande.add("-window_title");
+        commande.add(titreFenetre);
+        commande.add("-rtsp_transport");
+        commande.add("tcp");
+        commande.add(url);
+
+        System.out.println(commande);
 
         ProcessBuilder pb = new ProcessBuilder(commande);
 
