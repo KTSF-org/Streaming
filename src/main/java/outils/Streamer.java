@@ -3,6 +3,7 @@ package outils;
 import exceptions.SaisieInvalideException;
 import exceptions.StreamingException;
 import modele.FichierVideo;
+import video.LecteurStreaming;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +73,12 @@ public class Streamer {
     }
 
     /** Lance ffmpeg et lit sa sortie dans un thread daemon. */
-    private void lancer(List<String> commande, String nomFlux)
-            throws StreamingException { /* TODO */ }
+    public void lancer(String nomFlux, String titre)
+            throws StreamingException {
+        LecteurStreaming lecteur = new LecteurStreaming(
+                this.urlServeur + "/" + nomFlux, titre
+        );
+        this.fluxEnCours = nomFlux;
+        lecteur.demarrer();
+    }
 }
