@@ -5,6 +5,7 @@ import exceptions.StreamingException;
 import modele.FichierVideo;
 import video.LecteurStreaming;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Streamer {
@@ -17,7 +18,34 @@ public class Streamer {
 
     /** ffmpeg -re [-stream_loop -1] -i fichier <options du format> <sortie> */
     public void diffuserFichier(FichierVideo video, String nomFlux, boolean boucle)
-            throws StreamingException, SaisieInvalideException { /* TODO */ }
+            throws StreamingException, SaisieInvalideException {
+        List<String> commande = new ArrayList<>();
+        commande.add("ffmpeg");
+        commande.add("-re");
+        if (boucle) {
+            commande.add("-stream_loop");
+            commande.add("-1");
+        }
+        commande.add("-i");
+        commande.add(video.getChemin());
+        commande.addAll(video.getOptionStreaming());
+        commande.add("rtsp");
+        commande.add("-rtsp_transport");
+        commande.add("tcp");
+        commande.add(nomFlux);
+
+        ProcessBuilder pb = new ProcessBuilder(commande);
+
+        pb.redirectOutput(ProcessBuilder.Redirect.DISCARD);
+        pb.redirectError(ProcessBuilder.Redirect.DISCARD);
+        Process processus = pb.start();
+        return processus.waitFor();
+
+        if (nomFlux == null) {
+            throw new SaisieInvalideException("Le nom du flux est vide");
+        }
+
+    }
 
     /** ffmpeg <entrée caméra selon le système> <encodage direct> <sortie> */
     public void diffuserCamera(String nomFlux)
