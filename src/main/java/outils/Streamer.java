@@ -46,11 +46,8 @@ public class Streamer {
         commande.add("tcp");
         commande.add(nomFlux);
 
-        ProcessBuilder pb = new ProcessBuilder(commande);
-
-        pb.redirectOutput(ProcessBuilder.Redirect.DISCARD);
-        pb.redirectError(ProcessBuilder.Redirect.DISCARD);
-        Process processus = pb.start();
+        DiffuseurStreaming diff = new DiffuseurStreaming(commande, nomFlux);
+        diff.demarrer();
 
     }
 

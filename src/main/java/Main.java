@@ -10,8 +10,8 @@ import java.util.InputMismatchException;
 public class Main {
     public static void main(String[] args) {
 
-        Streamer strm = new Streamer("rtsp://172.16.120.28:8554");
-        strm.diffuserCamera("camera");
+        //Streamer strm = new Streamer("rtsp://172.16.120.28:8554");
+        //strm.diffuserCamera("camera");
 
         Controller c = new Controller();
         c.peuplerVideotheque("mp4");
@@ -46,7 +46,7 @@ public class Main {
                         c.diffuserFichier();
                         break;
                     case 8:
-                        c.convertirVideo();
+                        c.diffuserCamera();
                         break;
                     case 9:
                         c.convertirVideo();
