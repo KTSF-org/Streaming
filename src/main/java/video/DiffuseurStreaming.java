@@ -43,11 +43,22 @@ public class DiffuseurStreaming implements Runnable {
     @Override
     public void run() {
         try {
-            Ffmpeg.diffuser(commande, titre);
+            Ffmpeg.diffuser(commande, p -> {
+                process = p;
+                // Si arreter() a été appelé avant que le process existe
+                if (arretDemande) {
+                    arreter();
+                }
+            });
         } catch (StreamingException e) {
-            System.out.println(e.getMessage());
+            // Après un arrêt volontaire, une erreur est normale : on l'ignore
+            if (!arretDemande) {
+                System.out.println(e.getMessage());
+            }
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            if (!arretDemande) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -60,19 +71,13 @@ public class DiffuseurStreaming implements Runnable {
         if (p == null || !p.isAlive()) {
             return;
         }
-
         try {
-            // 1. Arrêt propre : ffmpeg quitte quand il reçoit 'q'
             OutputStream os = p.getOutputStream();
             os.write('q');
             os.flush();
-
-            // 2. On laisse 3 s pour se terminer
-            if (!p.waitFor(3, TimeUnit.SECONDS)) {
-                // 3. Arrêt "poli" du processus
+            if (!p.waitFor(5, TimeUnit.SECONDS)) {
                 p.destroy();
                 if (!p.waitFor(2, TimeUnit.SECONDS)) {
-                    // 4. Dernier recours
                     p.destroyForcibly();
                 }
             }
@@ -85,7 +90,6 @@ public class DiffuseurStreaming implements Runnable {
     }
 
     public boolean estEnCours() {
-        //System.out.println("En cours --> " + Thread.currentThread().getName());
         return thread != null && thread.isAlive();
     }
 
