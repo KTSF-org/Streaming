@@ -145,7 +145,7 @@ public class Streamer {
         LecteurStreaming lecteur = new LecteurStreaming(
                 this.urlServeur + "/" + nomFlux, titre
         );
-        this.fluxEnCours = nomFlux;
+        this.fluxEnCours = this.urlServeur + "/" + nomFlux;
         lecteur.demarrer();
     }
 }
