@@ -21,7 +21,7 @@ public class Controller {
     public static Scanner scan = new Scanner(System.in);
     private Videotheque videotheque = new Videotheque();
     private LecteurVideo lecteur;
-    private Streamer streamer;
+    private Streamer streamer = new Streamer("rtsp://172.16.120.28:8554");
     private static final List<String> formatFichierNumAccepte = List.of("AVI", "MP4");
 
     // Affiche le menu principal
@@ -33,6 +33,8 @@ public class Controller {
         System.out.println("4. Supprimer une vidéo");
         System.out.println("5. Lire une video");
         System.out.println("6. Convertir une vidéo");
+        System.out.println("7. Diffuser un fichier vidéo");
+        System.out.println("8. Diffuser la caméra");
         System.out.println("0. Quitter");
         System.out.println("=====================================");
     }
@@ -216,19 +218,22 @@ public class Controller {
             String nomFlux = saisieString("Saisir le nom du flux : ");
             boolean boucle = saisieString("Diffuser en boucle ? (o/n) : ").equalsIgnoreCase("o");
 
-            FichierVideo video = rechercherVideo();
-            if (video == null) {
+            Video v = videotheque.rechercherVideo(nomFichier);
+            if (v == null) {
                 System.out.println("Aucune vidéo trouvée avec ce titre.");
                 return;
             }
 
-            streamer.diffuserFichier(video, nomFlux, boucle);
+            streamer.diffuserFichier((FichierVideo) v, nomFlux, boucle);
+
             System.out.println("Diffusion lancée");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
-
+    public void diffuserCamera() {
+        streamer.diffuserCamera("camera");
     }
 
 //    public static String hashPassword(String password) {
