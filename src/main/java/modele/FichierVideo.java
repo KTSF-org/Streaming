@@ -97,6 +97,7 @@ public abstract class FichierVideo extends Video implements Convertible {
         return optionsStreaming();
     }
 
+
     public String getChemin() {
         return chemin;
     }

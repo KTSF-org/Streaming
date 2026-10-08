@@ -2,10 +2,16 @@
 import application.Controller;
 import application.Videotheque;
 import exceptions.*;
+import outils.Streamer;
+import video.LecteurStreaming;
+
 import java.util.InputMismatchException;
 
 public class Main {
     public static void main(String[] args) {
+
+        Streamer strm = new Streamer("rtsp://172.16.120.28:8554");
+        strm.diffuserCamera("camera");
 
         Controller c = new Controller();
         c.peuplerVideotheque("mp4");
