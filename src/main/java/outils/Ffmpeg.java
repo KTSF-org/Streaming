@@ -29,8 +29,6 @@ public final class Ffmpeg {
         commande.addAll(options);
         commande.add(sortie.getAbsolutePath());
 
-        //System.out.println(commande);
-
         ProcessBuilder pb = new ProcessBuilder(commande);
         pb.redirectErrorStream(true);          // stderr fusionné dans stdout
         Process processus = pb.start();
@@ -56,9 +54,7 @@ public final class Ffmpeg {
         commande.add("-window_title");
         commande.add(titreFenetre);
         commande.add(fichier.getAbsolutePath());
-
         ProcessBuilder pb = new ProcessBuilder(commande);
-
         pb.redirectOutput(ProcessBuilder.Redirect.DISCARD);
         pb.redirectError(ProcessBuilder.Redirect.DISCARD);
         Process processus = pb.start();
@@ -74,11 +70,7 @@ public final class Ffmpeg {
         commande.add("-rtsp_transport");
         commande.add("tcp");
         commande.add(url);
-
-        System.out.println(commande);
-
         ProcessBuilder pb = new ProcessBuilder(commande);
-
         pb.redirectOutput(ProcessBuilder.Redirect.DISCARD);
         pb.redirectError(ProcessBuilder.Redirect.DISCARD);
         Process processus = pb.start();
