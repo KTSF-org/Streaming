@@ -16,6 +16,8 @@ public class Streamer {
     private volatile Process processus;  // ffmpeg en cours (partagé entre threads)
     private String fluxEnCours;          // nom du chemin diffusé, ex. "film"
     private DiffuseurStreaming diffuseur;
+    private String camera = "HP True Vision HD Camera";
+    private String micro = "Réseau de microphones (Technologie Intel® Smart Sound pour microphones numériques)";
 
     public Streamer(String urlServeur) {
         this.urlServeur = urlServeur;
@@ -111,7 +113,7 @@ public class Streamer {
         option.add("-framerate");
         option.add("30");
         option.add("-i");
-        option.add("video=HP True Vision HD Camera:audio=Réseau de microphones (Technologie Intel® Smart Sound pour microphones numériques)");
+        option.add("video=" + this.camera + ":audio=" + this.micro);
         // Encodage vidéo
         option.add("-c:v");
         option.add("libx264");

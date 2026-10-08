@@ -55,6 +55,7 @@ public class Main {
                         c.arreterDiffusion();
                         break;
                     case 0:
+                        c.arreterDiffusion();
                         System.out.println("Au revoir !");
                         Controller.scan.close();
                         System.exit(0);

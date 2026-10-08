@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public final class Ffmpeg {
     private Ffmpeg() {
@@ -32,8 +33,6 @@ public final class Ffmpeg {
         ProcessBuilder pb = new ProcessBuilder(commande);
         pb.redirectErrorStream(true);          // stderr fusionné dans stdout
         Process processus = pb.start();
-        // TODO : lire la sortie du processus ligne par ligne
-        //        (BufferedReader) et l'afficher
         try (BufferedReader sortieProcessus = new BufferedReader(new InputStreamReader(processus.getInputStream()))) {
             String line;
             while ((line = sortieProcessus.readLine()) != null) {
@@ -46,8 +45,6 @@ public final class Ffmpeg {
     }
 
     public static int lire(File fichier, String titreFenetre) throws IOException, InterruptedException {
-        //la valeur par défaut du titre de la fenêtre est le nom du fichier d'entrée
-        //TODO execute ffplay -autoexit -window_title titre fichier.
         List<String> commande = new ArrayList<>();
         commande.add("ffplay");
         commande.add("-autoexit");
@@ -77,11 +74,12 @@ public final class Ffmpeg {
         return processus.waitFor();
     }
 
-    public static int diffuser(List<String> commande, String titreFenetre) throws IOException, InterruptedException, StreamingException {
+    public static int diffuser(List<String> commande, Consumer<Process> auDemarrage) throws IOException, InterruptedException, StreamingException {
         ProcessBuilder pb = new ProcessBuilder(commande);
         pb.redirectOutput(ProcessBuilder.Redirect.DISCARD);
         pb.redirectError(ProcessBuilder.Redirect.DISCARD);
         Process processus = pb.start();
+        auDemarrage.accept(processus);
         return processus.waitFor();
     }
 
