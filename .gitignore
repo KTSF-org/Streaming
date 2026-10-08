@@ -22,4 +22,4 @@ Thumbs.db
 *.env
 
 # Fichiers vidéo
-./media
+/media/
