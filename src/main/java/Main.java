@@ -49,7 +49,10 @@ public class Main {
                         c.diffuserCamera();
                         break;
                     case 9:
-                        c.convertirVideo();
+                        c.lectureStreaming();
+                        break;
+                    case 10:
+                        c.arreterDiffusion();
                         break;
                     case 0:
                         System.out.println("Au revoir !");

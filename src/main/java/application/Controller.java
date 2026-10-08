@@ -35,6 +35,8 @@ public class Controller {
         System.out.println("6. Convertir une vidéo");
         System.out.println("7. Diffuser un fichier vidéo");
         System.out.println("8. Diffuser la caméra");
+        System.out.println("9. Lire un stream");
+        System.out.println("10. Arreter la diffusion");
         System.out.println("0. Quitter");
         System.out.println("=====================================");
     }
@@ -234,6 +236,16 @@ public class Controller {
 
     public void diffuserCamera() {
         streamer.diffuserCamera("camera");
+    }
+
+    public void lectureStreaming() {
+        String nomFlux = saisieString("Saisir le nom du flux : ");
+        streamer.lancer(nomFlux, nomFlux);
+    }
+
+    public void arreterDiffusion() {
+        System.out.println("Arrêt de la diffusion");
+        streamer.arreter();
     }
 
 //    public static String hashPassword(String password) {
