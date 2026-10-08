@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
 
         Streamer strm = new Streamer("rtsp://172.16.120.28:8554");
-        strm.lancer("film", "Earth");
+        strm.diffuserCamera("camera");
 
         Controller c = new Controller();
         c.peuplerVideotheque("mp4");

@@ -85,4 +85,12 @@ public final class Ffmpeg {
         return processus.waitFor();
     }
 
+    public static int diffuser(List<String> commande, String titreFenetre) throws IOException, InterruptedException, StreamingException {
+        ProcessBuilder pb = new ProcessBuilder(commande);
+        pb.redirectOutput(ProcessBuilder.Redirect.DISCARD);
+        pb.redirectError(ProcessBuilder.Redirect.DISCARD);
+        Process processus = pb.start();
+        return processus.waitFor();
+    }
+
 }
