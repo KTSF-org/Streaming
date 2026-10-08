@@ -20,3 +20,6 @@ Thumbs.db
 
 # Fichiers de config locale éventuels
 *.env
+
+# Fichiers vidéo
+./media
