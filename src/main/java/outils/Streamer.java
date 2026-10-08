@@ -15,6 +15,7 @@ public class Streamer {
     private final String urlServeur;     // ex. "rtsp://192.168.1.50:8554"
     private volatile Process processus;  // ffmpeg en cours (partagé entre threads)
     private String fluxEnCours;          // nom du chemin diffusé, ex. "film"
+    private DiffuseurStreaming diffuseur;
 
     public Streamer(String urlServeur) {
         this.urlServeur = urlServeur;
@@ -23,7 +24,7 @@ public class Streamer {
     /**
      * ffmpeg -re [-stream_loop -1] -i fichier <options du format> <sortie>
      */
-    public void diffuserFichier(FichierVideo video, String nomFlux, boolean boucle)
+    public synchronized void diffuserFichier(FichierVideo video, String nomFlux, boolean boucle)
             throws StreamingException, SaisieInvalideException, IOException {
 
         if (nomFlux == null) {
@@ -44,23 +45,24 @@ public class Streamer {
         commande.add("rtsp");
         commande.add("-rtsp_transport");
         commande.add("tcp");
-        commande.add(nomFlux);
-
-        DiffuseurStreaming diff = new DiffuseurStreaming(commande, nomFlux);
-        diff.demarrer();
+        commande.add(this.urlServeur + "/" + nomFlux);
+        arreter();
+        diffuseur = new DiffuseurStreaming(commande, nomFlux);
+        diffuseur.demarrer();
 
     }
 
     /**
      * ffmpeg <entrée caméra selon le système> <encodage direct> <sortie>
      */
-    public void diffuserCamera(String nomFlux)
+    public synchronized void diffuserCamera(String nomFlux)
             throws StreamingException, SaisieInvalideException {
         List<String> commande = new ArrayList<>();
         commande.add("ffmpeg");
         commande.addAll(optionsCamera());
         commande.add(this.urlServeur + "/" + nomFlux);
-        DiffuseurStreaming diffuseur = new DiffuseurStreaming(commande, "camera");
+        arreter();
+        diffuseur = new DiffuseurStreaming(commande, "camera");
         diffuseur.demarrer();
     }
 
@@ -68,17 +70,23 @@ public class Streamer {
      * Arrête proprement ffmpeg : envoie "q" sur son entrée standard,
      * attend 5 s au maximum, sinon destroy().
      */
-    public void arreter() { /* TODO */ }
+    public synchronized void arreter() {
+        if (diffuseur != null) {
+            diffuseur.arreter();
+            diffuseur = null;
+        }
+        fluxEnCours = null;
+    }
 
-    public boolean estEnCours() {
-        return processus != null && processus.isAlive();
+    public synchronized boolean estEnCours() {
+        return diffuseur != null && diffuseur.estEnCours();
     }
 
     /**
      * URL à donner aux spectateurs, ex. rtsp://.../film
      */
-    public String getUrlLecture() { /* TODO */
-        return "";
+    public synchronized String getUrlLecture() {
+        return this.fluxEnCours;
     }
 
     /**
@@ -91,7 +99,7 @@ public class Streamer {
     /**
      * Entrée caméra : dshow, v4l2 ou avfoundation selon os.name
      */
-    private List<String> optionsCamera() { /* TODO */
+    private List<String> optionsCamera() {
         List<String> option = new ArrayList<>();
         // Entrée DirectShow
         option.add("-f");
@@ -144,7 +152,7 @@ public class Streamer {
         LecteurStreaming lecteur = new LecteurStreaming(
                 this.urlServeur + "/" + nomFlux, titre
         );
-        this.fluxEnCours = nomFlux;
+        this.fluxEnCours = this.urlServeur + "/" + nomFlux;
         lecteur.demarrer();
     }
 }
