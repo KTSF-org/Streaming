@@ -42,6 +42,15 @@ public class Main {
                     case 6:
                         c.convertirVideo();
                         break;
+                    case 7:
+                        c.diffuserFichier();
+                        break;
+                    case 8:
+                        c.convertirVideo();
+                        break;
+                    case 9:
+                        c.convertirVideo();
+                        break;
                     case 0:
                         System.out.println("Au revoir !");
                         Controller.scan.close();

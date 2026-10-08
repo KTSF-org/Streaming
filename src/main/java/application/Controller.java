@@ -6,6 +6,7 @@ import exceptions.VideoIntrouvableException;
 import exceptions.VideothequeVideException;
 import modele.*;
 import video.LecteurVideo;
+import outils.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class Controller {
     public static Scanner scan = new Scanner(System.in);
     private Videotheque videotheque = new Videotheque();
     private LecteurVideo lecteur;
+    private Streamer streamer;
     private static final List<String> formatFichierNumAccepte = List.of("AVI", "MP4");
 
     // Affiche le menu principal
@@ -206,6 +208,27 @@ public class Controller {
     public void lectureVideo() {
         String titre = saisieString("Saisir le titre de la video à regarder : ");
         videotheque.lireVideo(titre);
+    }
+
+    public void diffuserFichier() {
+        try {
+            String nomFichier = saisieString("Saisir le nom du fichier à diffuser : ");
+            String nomFlux = saisieString("Saisir le nom du flux : ");
+            boolean boucle = saisieString("Diffuser en boucle ? (o/n) : ").equalsIgnoreCase("o");
+
+            FichierVideo video = rechercherVideo();
+            if (video == null) {
+                System.out.println("Aucune vidéo trouvée avec ce titre.");
+                return;
+            }
+
+            streamer.diffuserFichier(video, nomFlux, boucle);
+            System.out.println("Diffusion lancée");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 //    public static String hashPassword(String password) {
